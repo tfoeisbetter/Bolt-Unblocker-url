@@ -1,8 +1,8 @@
 # Use Node.js Alpine image (smaller size)
 FROM node:18-alpine
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# Enable corepack and install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Set working directory
 WORKDIR /app
@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
 
 # Install dependencies
-RUN pnpm i
+RUN pnpm i --frozen-lockfile
 
 # Copy all project files
 COPY . .
@@ -19,5 +19,5 @@ COPY . .
 # Expose port 8080
 EXPOSE 8080
 
-# Start command (you'll need to specify your start script)
+# Start the application
 CMD ["pnpm", "start"]
