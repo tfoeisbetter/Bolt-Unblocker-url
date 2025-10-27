@@ -73,10 +73,18 @@ fastify.setNotFoundHandler((request, reply) => {
 });
 
 
-function shutdown() {
+async function shutdown() {
     console.log("SIGTERM signal received: closing HTTP server");
-    fastify.close();
-    process.exit(0);
+    try {
+        // wait for Fastify to close all connections and stop accepting new ones
+        await fastify.close();
+        console.log("HTTP server closed cleanly");
+        process.exit(0);
+    } catch (err) {
+        console.error("Error while closing HTTP server:", err);
+        // non-zero exit code to indicate failure during shutdown
+        process.exit(1);
+    }
 }
 
 process.on("SIGINT", shutdown);
