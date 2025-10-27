@@ -1,0 +1,23 @@
+# Use Node.js Alpine image (smaller size)
+FROM node:18-alpine
+
+# Install pnpm globally
+RUN npm install -g pnpm
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml* ./
+
+# Install dependencies
+RUN pnpm i
+
+# Copy all project files
+COPY . .
+
+# Expose port 8080
+EXPOSE 8080
+
+# Start command (you'll need to specify your start script)
+CMD ["pnpm", "start"]
